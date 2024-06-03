@@ -1,1 +1,1 @@
-# -approximate-joint-diagonalization
+# approximate-joint-diagonalization
