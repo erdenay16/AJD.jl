@@ -22,8 +22,8 @@ function ffdiag(Cs)
     V = I
     n = 1
     
-    Ds = zeros(dim1, dim2)
-    Es = zeros(length(Carr), dim1, dim2)
+    Ds = zeros(dim1, dim2, length(Carr))
+    Es = zeros(dim1, dim2, length(Carr))
 
     # doiesnt do anything right now because V = I
     for C in Carr
@@ -35,20 +35,22 @@ function ffdiag(Cs)
         
         # fill the Ds and Es matrices
         for i in eachindex(Carr)
-            Ds[i] = diagm(diag(C[i]))
-            Es[i] = Carr[i]
+            Ds[:,:,i] = diagm(diag(Carr[i]))
+            Es[:,:,i] = Carr[i]
+
             # make the diagonal of Es zero
             for j in 1:dim1
-                Es[j,j] = 0
-            end
+                Es[j,j,i] = 0                
+                end
+
             
         # calculate W (17) 
         z = zeros(dim1, dim2)
         y = zeros(dim1, dim2)
         
         # Todo: Implement broadcast for the last loop sum(Ds[:,i] .* Ds[:,j] 
-        for i in 1:dim1
-            for j in 1:dim2
+        for i in 1:dim1-1
+            for j in 1+1:dim2
                 for k in 1:length(Carr)
                     z[i, j] += Ds[k, i] * Ds[k, j]
                     y[i, j] += Ds[k, j] * Es[k, i, j] # This is the same as += 0.5* Ds[k,j]*(Es[k,i,j] + Es[k,j,i]) as according to the paper
@@ -81,7 +83,8 @@ function ffdiag(Cs)
     end
 
     return Carr, V
-
+    
+end
 end
 
-ffdiag(Cs)[]
+export ffdiag
