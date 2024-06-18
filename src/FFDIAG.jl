@@ -22,8 +22,8 @@ function ffdiag(Cs)
     V = I
     n = 1
     
-    Ds = zeros(dim1, length(Carr))
-    Es = zeros(dim1, dim2, length(Carr))
+    Ds = zeros(dim1, dim2)
+    Es = zeros(length(Carr), dim1, dim2)
 
     # doiesnt do anything right now because V = I
     for C in Carr
@@ -34,15 +34,14 @@ function ffdiag(Cs)
     for run in 1:runs
         
         # fill the Ds and Es matrices
-        for k in eachindex(Carr)
-            Ds[:,k] = diag(Carr[k])
-            Es[:,:,k] = Carr[k]
-
+        for i in eachindex(Carr)
+            Ds[i] = diagm(diag(C[i]))
+            Es[i] = Carr[i]
             # make the diagonal of Es zero
             for j in 1:dim1
-                Es[j,j,k] = 0                
-                end
-        
+                Es[j,j] = 0
+            end
+            
         # calculate W (17) 
         z = zeros(dim1, dim2)
         y = zeros(dim1, dim2)
@@ -50,10 +49,9 @@ function ffdiag(Cs)
         # Todo: Implement broadcast for the last loop sum(Ds[:,i] .* Ds[:,j] 
         for i in 1:dim1
             for j in 1:dim2
-                for k in eachindex(Carr)
-                    z[i, j] += Ds[i, k] * Ds[i, k]
-                    y[i, j] += 0.5* Ds[j , k]*(Es[i,j,k] + Es[j,i,k]) 
-                    # y[i, j] += Ds[j, k] * Es[i, j, k] # This is the same as += 0.5* Ds[k,j]*(Es[k,i,j] + Es[k,j,i]) as according to the paper
+                for k in 1:length(Carr)
+                    z[i, j] += Ds[k, i] * Ds[k, j]
+                    y[i, j] += Ds[k, j] * Es[k, i, j] # This is the same as += 0.5* Ds[k,j]*(Es[k,i,j] + Es[k,j,i]) as according to the paper
                 end
             end
         end
@@ -62,15 +60,8 @@ function ffdiag(Cs)
         # put the broadcast directly in the loop and elimnate the above 3 for loops
         for i in 1:dim1
             for j in i:dim2
-                # This was put in place so we dont divide by zero
-                # Todo: Investigate why zero even shows up
-                if z[j,j]*z[i,i]-z[i,j]^2 != 0
-                    W[i, j] = (z[i, j]*y[j, i]-y[i, i]*z[i, j])/(z[j,j]*z[i,i]-z[i,j]^2)
-                    W[j, i] = (z[i,j]*y[i,j]-z[j,j]*y[j,i])/(z[j,j]*z[i,i]-z[i,j]^2)
-                else
-                    W[i, j] = 0
-                    W[j, i] = 0
-                end
+                W[i, j] = (z[i, j]*y[i, j]-y[i, i]*z[i, j])/(z[j,j]*z[i,i]-z[i,j]^2)
+                W[j, i] = (z[i,j]*y[i,j]-z[j,j]*y[j,i])/(z[j,j]*z[i,i]-z[i,j]^2)
             end
         end
 
@@ -82,10 +73,8 @@ function ffdiag(Cs)
         end
 
         V = (I + W) * V
-
-        @info(W)
-        for K in eachindex(Carr)
-            Carr[K] = (I + W[k]) * Carr[k] * (I + W[k])'
+        for C in Carr
+            C = (I + W) * C * transpose((I + W))
         end 
 
         n += 1
@@ -93,8 +82,8 @@ function ffdiag(Cs)
     end
 
     return Carr, V
-    
-end
+
 end
 
-export ffdiag
+ffdiag(Cs)[]
+end
