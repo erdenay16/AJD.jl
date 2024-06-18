@@ -1,7 +1,8 @@
 using AJD
 using Test
-using MatrixDepot
-using Plots
+using MatrixDepot: matrixdepot
+using Plots: plot
+using LinearAlgebra: I
 # include("../src/FFDIAG.jl")
 # using .FFDIAG: ffdiag
 
@@ -26,3 +27,7 @@ import AJD: ffdiag
     # println("The result is a diagonal matrix: $is_diagonal")
 
 end
+
+# Test error, when matrices have different dimensions
+# Test error, when matrices not square
+# Test correct Ds is matrix with diagonal elements and and Es is matrix with all elements except diagonal is zero
