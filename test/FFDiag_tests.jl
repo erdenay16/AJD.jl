@@ -11,13 +11,22 @@ import AJD: ffdiag
 @testset "AJD.jl" begin
     # Write your tests here.
     # generate 5 random matrices
-    matrix = [matrixdepot("minij", 5) for i in 1:2]
-    plot(matrix[1])
+    # matrix = [matrixdepot("lehmer", 3) for i in 1:2]
+    matrix = [matrixdepot("lehmer", 3), matrixdepot("lehmer", 3)]
+
+    # plot(matrix[1])
     # matrix = matrixdepot("minij", 5)
     
+    # matrix = [[0.0 1.0 -2.0
+    #      1.0 1.0 0.0
+    #      -2.0 0.0 3.0],
+    #      [-1.0 3.0 -1.0
+    #       3.0 5.0 -1.0
+    #       -1.0 -1.0 1.0]]
+
     result = ffdiag(matrix)
 
-    @info(result[1])
+    # println("The result is: $result")
     # @info(matrix[1])
     
 

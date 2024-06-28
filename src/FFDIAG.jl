@@ -13,13 +13,14 @@ function ffdiag(Cs)
     dim1, dim2 = size(Carr[1])
     
     # Cs must be set of square matrices -> check if square
-    (dim1 == dim2) || throw(DimensionMismatch("Error: Matrices not square"))
+    # (dim1 == dim2) || error("Error: Matrices not square")
     
     W = zeros(dim1, dim2)
-    # V = I
+    V = I
     # init of V from joint diagonalizer python code
-    V = [-0.85065081  0.52573111
-     0.52573111  0.85065081]
+    # V = [-0.85065081  0.52573111
+    #  0.52573111  0.85065081]
+
     n = 1
     
     Ds = [zeros(dim1) for _ in Carr]
@@ -105,23 +106,61 @@ function ffdiag(Cs)
 
         n += 1
 
- 
-        @info "C: ", Carr, V
+        # @info "End: ", V
+
+        for i in eachindex(Carr)  
+            Carr[i] = ((I + W) * Carr[i] * (I + W)')             
+
+            errs[run + 1] += norm(Cs[i] - diagm(diag(Cs[i]))) / length(Carr)
+        end  
+        
+        tol=1e-6
+        # check for convergence
+        if abs(errs[run + 1] - errs[run]) < tol
+            for row in eachrow(V)
+                println(row)
+            end
+
+            # Print V with each new line as a new row
+            @info "Converged at iteration ", run
+            return Carr, V#errs[1:run + 1]
+        end
 
 
+        n += 1
+
+        # @info "End: ", V
+
+        
     end
-
-
-    @info "End: ", Carr, V
-
+    
+    
+    
+    # Print V with each new line as a new row
+    for row in eachrow(V)
+        println(row)
+    end
 
     return Carr, V
 
 end
 
 
- D = [[1.0 2.0
- 3.0 4.0], [4.0 5.0 
- 5.0 6.0]]
+#  D = [[1.0 2.0
+#  3.0 4.0], [4.0 5.0 
+#  5.0 6.0]]
+
+# D =  [[4.0 1.0 
+#        1.0 3.0], 
+#       [5.0 1.0
+#        1.0 2.0]]
+
+D = [[  0.0 1.0 -2.0
+         1.0 1.0 0.0
+         -2.0 0.0 3.0],
+         [-1.0 3.0 -1.0
+          3.0 5.0 -1.0
+          -1.0 -1.0 1.0]]
+
 
 ffdiag(D)
