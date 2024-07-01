@@ -1,8 +1,7 @@
 module AJD
 
-using LinearAlgebra: transpose, I
+include("FFDiag/ffdiag.jl")
+include("FFDiag/plot.jl")
 
-include("FFDIAG.jl")
-# Write your package code here.
-export FFDiag
+export ffdiag, plot
 end
