@@ -1,10 +1,9 @@
-
 using LinearAlgebra: I, diag, diagm, norm, tr, opnorm
 using Base: frexp
 
 
 """
-ffdiag(Cs) -> AbstractArray{<:Real}
+ffdiag(Cs, runs, tol) -> AbstractArray{<:Real}, Matrix{<:Real}, Array{<:Real}
 
 This is an Implementation of the Algorithm introduced in: 
 Ziehe, Andreas; Laskov, Pavel; Nolte, Guido; Müller Klaus-Robert. (2004).
@@ -13,23 +12,32 @@ Transformations and its Application to
 Blind Source Separation.
 Journal of Machine Learning Research 5 (2004) 777–800.
 
+The function returns the diagonalized set of matrices, the diagonalization matrix and an array of diagonlization errors per iteration.
+
 # Arguments
 - Cs::AbstractArray{<:Real}: This is a set of matrices to be diagonalized.
+- runs::Int: The maximum number of iterations. The default is max 100 iterations.
+- tol::Float64: The tolerance for the error. The default is 1e-9.
 """
 
 function ffdiag(
     C0::AbstractArray{<:Real},
-    runs::Real=100,
-    tol::Float64=1e-9 # = eps
+    runs::Int=100,
+    tol::Float64=1e-9
 )
-
     @assert length(size(C0)) == 3 "C must be a tensor with dimensions K x M x N"
     @assert tol >= 0 "Tolerance must be a nonnegative real number."
     @assert runs > 0 "Maximum iteration must be positive."
 
     dim1, dim2, K = size(C0) # m,n,K
 
-    @assert (dim1 == dim2) "Error: Matrices not square"
+    @assert (dim1 == dim2) "Error: Matrices not square."
+    @assert K > 1 "Error: Input is only one matrix not a set of matrices."
+
+    # Assert symmetry of matrices
+    for k in 1:K
+        @assert isapprox(C0[:, :, k], C0[:, :, k]') "Error: Matrix Cs[$k] is not symmetrical."
+    end
 
     # Init
     V = I
@@ -80,8 +88,9 @@ function ffdiag(
 end
 
 
+# W is calculated as described by equation 17 in the article. 
 
-function getW(Cs::AbstractArray{<:Real})
+function getW(Cs)
 
     dim1, dim2, K = size(Cs)
 
@@ -119,28 +128,36 @@ function getW(Cs::AbstractArray{<:Real})
 end
 
 
+
+# Returns the magnitude of the off-diagonal elements. When f apporaches zero the matrix approaches diagonalization
+
 function off(V, C)
     F = V * C * V'
     f = tr(F' * F) - tr(F .* F)
     return f 
 end
 
-function get_off(V, C)
-    _, _, K = size(C)
+
+# Returns the sum of the magnitude of the off-diagonal elements for multiple matrices 
+
+function get_off(V, Cs)
+    _, _, K = size(Cs)
     f = 0
 
     for k in 1:K
-        f = f + off(V, C[:, :, k])
+        f = f + off(V, Cs[:, :, k])
     end
     return f
 end
 
-function cost_off(C, V)
-    n, m, K = size(C)
+
+# Calculates the norm of the elements that are not on the diagonal and sums it over all matirces of C
+function cost_off(Cs, V)
+    n, m, K = size(Cs)
 
     cost = 0
     for k in 1:K
-        Ck = (V * C[:, :, k] * V')
+        Ck = (V * Cs[:, :, k] * V')
         for i in 1:n
             for j in 1:m
                 if i == j
@@ -154,14 +171,14 @@ function cost_off(C, V)
 
 end
 
+# norms the the matrix 
 function normit(V)
-    N, M = size(V)
-    V_res = copy(V)
+    N, _ = size(V)
     for n in 1:N
         nn = norm(V[:, n])
         if nn >= 1e-9
             V[:, n] = V[:, n] ./ nn
         end
     end
-    return V_res
+    return V
 end

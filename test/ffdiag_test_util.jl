@@ -37,12 +37,3 @@ function genApproxDiagMs(K::Int, size::Int)
     end 
     return Cx, Ax  
 end
-
-function check_diag(Cs)
-    tol = 1e-9 
-    _, _, K = size(Cs)
-    for k in 1:K
-        off_diag_sum = sum(abs, Cs[:, :, k]) - sum(abs, diagm(diag(Cs[:, :, k])))
-        return off_diag_sum < tol
-    end
-end

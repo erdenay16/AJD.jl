@@ -1,7 +1,16 @@
-using Plots
+using Plots: plot
 
+"""
+plot_convergence(errs) 
 
-function plot_convergence(errs)
+Plot the convergence error over iterations on a logarithmic scale.
+
+# Arguments
+- err::AbstractVector{<:AbstractFloat} An array with the errors, where the index corresponds to the number of iteration.
+
+"""
+
+function plot_convergence(errs::AbstractVector{<:Real})
 
     plot(
     1:length(errs), errs;
@@ -9,6 +18,7 @@ function plot_convergence(errs)
     title="Plotting Convergence",
     xlabel="number of iteration",
     ylabel="convergence error",
+    label="ffdiag",
     # Line style
     color=:black,
     linewidth=2,
@@ -21,3 +31,4 @@ function plot_convergence(errs)
 )
 
 end
+
