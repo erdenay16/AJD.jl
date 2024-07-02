@@ -1,5 +1,6 @@
 module AJD
 
+
 include("QDiag/_KN3_approach.jl")
 
 import LinearAlgebra: isposdef, eigen, Diagonal, norm
@@ -82,7 +83,7 @@ function _optimize(
     return result
 end
 
-
 export QDiag
 
+export ffdiag, plot_convergence, getW, off, cost_off, get_off, normit
 end
