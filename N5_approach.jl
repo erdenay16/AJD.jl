@@ -54,21 +54,3 @@ function QDiag_N5(C_0::AbstractArray{<:Real}, C::AbstractArray{<:Real}, weights:
 end
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
-###
-_initialize_N5: Diese Funktion initialisiert die notwendigen Variablen und transformiert die Eingabematrizen.
-_optimize_N5: Hier findet die Hauptoptimierungsschleife statt. Diese iteriert, um die Off-Diagonalelemente der transformierten Matrizen zu minimieren.
-QDiag_N5: Dies ist die Hauptfunktion, die den gesamten Prozess koordiniert. Sie überprüft die Eingaben, ruft die Initialisierungs- und Optimierungsfunktionen auf und gibt das Ergebnis zurück.
-###
-
