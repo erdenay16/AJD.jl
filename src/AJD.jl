@@ -1,7 +1,8 @@
 module AJD
 
-
 include("QDiag/_KN3_approach.jl")
+include("FFDiag/ffdiag.jl")
+include("FFDiag/plot.jl")
 
 import LinearAlgebra: isposdef, eigen, Diagonal, norm
 import Random: Xoshiro
@@ -83,7 +84,5 @@ function _optimize(
     return result
 end
 
-export QDiag
-
-export ffdiag, plot_convergence, getW, off, cost_off, get_off, normit
+export QDiag, ffdiag, plot_convergence, getW, off, cost_off, get_off, normit
 end
