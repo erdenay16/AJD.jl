@@ -1,4 +1,4 @@
-using LinearAlgebra: I, diag, diagm, norm, tr, opnorm
+using LinearAlgebra: I, diag, diagm, norm, tr, opnorm, UpperTriangular, LowerTriangular
 using Base: frexp
 
 
@@ -49,9 +49,9 @@ function ffdiag(
     fs = zeros(runs + 1)
 
     # doesnt do anything right now because V = I 
-    for k in 1:K
-        V * Cs[k] * V'
-    end
+    # for k in 1:K
+    #     V * Cs[k] * V'
+    # end
 
     while run < runs && df > tol
 
@@ -93,29 +93,24 @@ end
 function getW(Cs)
 
     dim1, dim2, K = size(Cs)
-
-    W = zeros(dim1, dim2)
-    Ds = [zeros(dim1) for _ in 1:K]
-    Es = copy(Cs)
-
-    for i in 1:K
-        Ds[i] = (diag(Cs[:, :, i]))
-        # make the diagonal of Es zero
-        for j in 1:dim1
-            Es[j, j, i] = 0
-        end
-    end
-
+    
+    # Ds = the diagonal of Cs
+    Ds = [diag(Cs[:, :, i]) for i in 1:K]
+    
+    # Es = Cs with the diagonal set to zero
+    Es = copy(Cs); [Es[:, :, i] -= diagm(Ds[i]) for i in 1:K]
+    
     # calculate W (17) 
-    z = zeros(dim1, dim2)
+    z = zeros(dim1, dim2); 
     y = zeros(dim1, dim2)
-
+    
     for k in 1:K
         z += (Ds[k] * Ds[k]')
         y += 0.5 .* Ds[k]' .* (Es[:, :, k] + Es[:, :, k]')
     end
+    
+    W = zeros(dim1, dim2)
 
-    # Check if we need to the for loops are programmed correctly 
     for i in 1:dim1-1
         for j in (i+1):dim2
             if i != j
@@ -141,12 +136,8 @@ end
 # Returns the sum of the magnitude of the off-diagonal elements for multiple matrices 
 
 function get_off(V, Cs)
-    _, _, K = size(Cs)
-    f = 0
-
-    for k in 1:K
-        f = f + off(V, Cs[:, :, k])
-    end
+    _, _, K = size(Cs) 
+    f = sum( off(V, Cs[:, :, k]) for k in 1:K )
     return f
 end
 
@@ -158,13 +149,8 @@ function cost_off(Cs, V)
     cost = 0
     for k in 1:K
         Ck = (V * Cs[:, :, k] * V')
-        for i in 1:n
-            for j in 1:m
-                if i == j
-                    Ck[i, j] = 0
-                end
-            end
-        end
+        # The diagonal is set to zero
+        Ck -= diagm(diag(Ck))
         cost += norm(Ck)^2
     end
     return cost
