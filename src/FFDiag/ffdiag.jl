@@ -3,7 +3,9 @@ using Base: frexp
 
 
 """
-ffdiag(Cs, runs, tol) -> AbstractArray{<:Real}, Matrix{<:Real}, Array{<:Real}
+    ffdiag(C0, runs=100, tol=1e-9) -> AbstractArray{<:Real}, Matrix{<:Real}, Array{<:Real}
+
+Compute the transformation matrix that diagonalizes a set of symmetric matrices.
 
 This is an Implementation of the Algorithm introduced in: 
 Ziehe, Andreas; Laskov, Pavel; Nolte, Guido; Müller Klaus-Robert. (2004).
@@ -15,21 +17,29 @@ Journal of Machine Learning Research 5 (2004) 777–800.
 The function returns the diagonalized set of matrices, the diagonalization matrix and an array of diagonlization errors per iteration.
 
 # Arguments
-- Cs::AbstractArray{<:Real}: This is a set of matrices to be diagonalized.
+- C0::AbstractArray{<:Real}: This is a set of matrices to be diagonalized.
 - runs::Int: The maximum number of iterations. The default is max 100 iterations.
 - tol::Float64: The tolerance for the error. The default is 1e-9.
 """
+
+
 
 function ffdiag(
     C0::AbstractArray{<:Real},
     runs::Int=100,
     tol::Float64=1e-9
 )
+
+    C = copy(C0)
+    C = reshape(C, size(C, 1), size(C, 2), 1)
+    C0 = cat(C0, C, dims=3)
+    println(C0[:,1])
+
     @assert length(size(C0)) == 3 "C must be a tensor with dimensions K x M x N"
     @assert tol >= 0 "Tolerance must be a nonnegative real number."
     @assert runs > 0 "Maximum iteration must be positive."
 
-    dim1, dim2, K = size(C0) # m,n,K
+    dim1, dim2, K = size(C0)
 
     @assert (dim1 == dim2) "Error: Matrices not square."
     @assert K > 1 "Error: Input is only one matrix not a set of matrices."
@@ -168,3 +178,18 @@ function normit(V)
     end
     return V
 end
+
+
+
+# c = zeros(2, 2, 2)
+# c[:, :, 1] = [1.0 0.2; 0.2 0.8]
+# c[:, :, 2] = [0.5 0.3; 0.3 0.5]
+# println
+
+c = [1.0 0.2; 0.2 0.8]; [0.5 0.3; 0.3 0.5] 
+
+ck, v = ffdiag(c)
+
+println(ck, v)
+
+# println(ffdiag(simple2x2symmetric, 100, 1e-9))
