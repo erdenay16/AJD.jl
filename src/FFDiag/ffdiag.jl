@@ -21,20 +21,11 @@ The function returns the diagonalized set of matrices, the diagonalization matri
 - runs::Int: The maximum number of iterations. The default is max 100 iterations.
 - tol::Float64: The tolerance for the error. The default is 1e-9.
 """
-
-
-
 function ffdiag(
     C0::AbstractArray{<:Real},
     runs::Int=100,
     tol::Float64=1e-9
 )
-
-    C = copy(C0)
-    C = reshape(C, size(C, 1), size(C, 2), 1)
-    C0 = cat(C0, C, dims=3)
-    println(C0[:,1])
-
     @assert length(size(C0)) == 3 "C must be a tensor with dimensions K x M x N"
     @assert tol >= 0 "Tolerance must be a nonnegative real number."
     @assert runs > 0 "Maximum iteration must be positive."
