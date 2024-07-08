@@ -4,7 +4,7 @@
 
 This Julia package implements two algorithms for approximate joint diagonalization.
 
-### FFDiag - Fast Frobenius Diagonalization
+### ffdiag - Fast Frobenius Diagonalization
 
 Andreas Ziehe, Pavel Laskov, Guido Nolte, and Klaus-Robert Müller. A fast algorithm for joint diagonalization with non-orthogonal transformations and its application to blind source separation. The Journal of Machine Learning Research, 5:777–800, 2004.
 
@@ -56,14 +56,37 @@ For more detailed instructions, you can refer to the [official documentation](ht
 
 ## Example 
 
+### ffdiag
 ```Julia 
-C, V, err = ffdiag(C0)
+c0 = zeros(2, 2, 2) #
+
+c0[:, :, 1] = [1.0 0.2; 0.2 0.8] #Diagonal Matrix
+c0[:, :, 2] = [0.5 0.3; 0.3 0.5] #Diagonal Matrix
+
+C, V, errs = ffdiag(c0) 
 ```
-_C_ is the diagonalized matrices of _C0_
 
-_V_ is the transformation matrix that diagonalized the matrices in _C_
+The output of `ffdiag`:
 
-_err_ is returned so that it can be ploted. This can be ignored for most users. 
+```Julia
+C = [0.7129098004138166 -5.551115123125783e-17;  #c0[:, :, 1]
+     0.0                 1.0354978428982857;;;
+
+     0.20201378693464273 2.7755575615628914e-17; #c0[:, :, 2]
+     5.551115123125783e-17 0.7693237926831918]
+
+V = [0.7468844481936993 -0.6649538488093691; 
+     0.528907590114557   0.848679421878021]
+```
+
+
+
+
+__C__ is the diagonalized matrices of __C0__. Note that the off-diagonal values approach 0
+
+__V__ is the transformation matrix that diagonalized the matrices in __C__
+
+__err__ is returned so that it can be ploted. This can be ignored for most users. 
 
 
 Todo: add for qdiag 
