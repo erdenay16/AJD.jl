@@ -5,7 +5,7 @@ using Base: frexp
 """
     ffdiag(C0, runs=100, tol=1e-9) -> AbstractArray{<:Real}, Matrix{<:Real}, Array{<:Real}
 
-Compute the transformation matrix that diagonalizes a set of symmetric matrices.
+Compute the transformation matrix that diagonalizes a set of symmetric matrices
 
 This is an Implementation of the Algorithm introduced in: 
 Ziehe, Andreas; Laskov, Pavel; Nolte, Guido; Müller Klaus-Robert. (2004).
@@ -30,7 +30,7 @@ function ffdiag(
     @assert tol >= 0 "Tolerance must be a nonnegative real number."
     @assert runs > 0 "Maximum iteration must be positive."
 
-    dim1, dim2, K = size(C0)
+    dim1, dim2, K = size(C0) # m,n,K
 
     @assert (dim1 == dim2) "Error: Matrices not square."
     @assert K > 1 "Error: Input is only one matrix not a set of matrices."
@@ -49,11 +49,6 @@ function ffdiag(
     errs = zeros(runs + 1)
     fs = zeros(runs + 1)
 
-    # doesnt do anything right now because V = I 
-    # for k in 1:K
-    #     V * Cs[k] * V'
-    # end
-
     while run < runs && df > tol
 
         W = getW(Cs)
@@ -69,13 +64,11 @@ function ffdiag(
         # Renormalization
         V = diagm(1 ./ sqrt.(diag(V * V'))) * V
 
-        for k in 1:K
-            # Cs[:, :, k] = ((I + W) * C0[:, :, k] * (I + W)')
-            Cs[:, :, k] = (V * C0[:, :, k] * V')
-            #errs[run+1] += norm(Cs[:, :, k] - diagm(diag(Cs[:, :, k]))) / K
-        end
+        # Update Cs
+        [Cs[:, :, k] = (V * C0[:, :, k] * V') for k in 1:K]
 
-        fs[run] = get_off(V, C0)
+        # Compute off-diagonal elements 
+        fs[run]   = get_off(V, C0)
         errs[run] = cost_off(C0, normit(V')')
 
         if run > 2
@@ -145,7 +138,7 @@ end
 
 # Calculates the norm of the elements that are not on the diagonal and sums it over all matirces of C
 function cost_off(Cs, V)
-    n, m, K = size(Cs)
+    _, _, K = size(Cs)
 
     cost = 0
     for k in 1:K
@@ -169,18 +162,3 @@ function normit(V)
     end
     return V
 end
-
-
-
-# c = zeros(2, 2, 2)
-# c[:, :, 1] = [1.0 0.2; 0.2 0.8]
-# c[:, :, 2] = [0.5 0.3; 0.3 0.5]
-# println
-
-c = [1.0 0.2; 0.2 0.8]; [0.5 0.3; 0.3 0.5] 
-
-ck, v = ffdiag(c)
-
-println(ck, v)
-
-# println(ffdiag(simple2x2symmetric, 100, 1e-9))
