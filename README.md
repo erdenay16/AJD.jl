@@ -59,9 +59,9 @@ For more detailed instructions, you can refer to the [official documentation](ht
 ```Julia 
 C, V, err = ffdiag(C0)
 ```
-Where _C_ is the diagonalized matrices of _C0_
+_C_ is the diagonalized matrices of _C0_
 
-And _V_ is the transformation matrix that diagonalized the matrices in _C_
+_V_ is the transformation matrix that diagonalized the matrices in _C_
 
 _err_ is returned so that it can be ploted. This can be ignored for most users. 
 
