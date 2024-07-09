@@ -99,6 +99,8 @@ include("ffdiag_test_util.jl")
 
             isapprox(round.(V, digits=3), round.(res, digits=3))
         end
+
+        # Makes 10 10x10 matrices and checks if the off-diagonal elements are zero
         @test begin
             K = 10
             n = 10
@@ -114,6 +116,20 @@ include("ffdiag_test_util.jl")
             end
 
             isapprox(0, f, atol=1e-9)
+        end
+
+        # Makes 10 10x10 matrices and checks if V* all C0 * V' are diagonal
+        @testset "does_v_diganoalize_all" begin
+            K = 10
+            n = 10
+
+            C0, _ = genFullyDiagMs(n, K)
+            _, V, _ = ffdiag(C0)
+
+            for k in 1:K
+                F = V * C0[:, :, k] * V'
+                @test isapprox(F, diagm(diag(F)), atol=1e-9)
+            end
         end
     end
 
