@@ -10,7 +10,7 @@ include("ffdiag_test_util.jl")
 
 @testset "AJD.jl" begin
     
-    @testset "test_helper_funktions" begin
+    @testset "test helper functions" begin
         Cs = ones(2, 2, 2)
         Cs[:, :, 1] = [1.0 0.2; 0.2 0.8]
         Cs[:, :, 2] = [0.5 0.3; 0.3 0.5]
@@ -46,28 +46,28 @@ include("ffdiag_test_util.jl")
         end
     end
 
-    @testset "ffdiag_assertions" begin
+    @testset "ffdiag assertions" begin
         Cs1 = ones(2, 2, 1)
         Cs1[:,:,1] = [1.0 0.2; 0.2 0.8]
-        @test_throws AssertionError ffdiag(Cs1[:,:,1])
-        @test_throws AssertionError ffdiag(Cs1)
+        @test_throws ArgumentError ffdiag(Cs1[:,:,1])
+        @test_throws ArgumentError ffdiag(Cs1)
         Cs2 = ones(2, 2, 2)
         Cs2[:, :, 1] = [1.0 0.2; 0.2 0.8]
         Cs2[:, :, 2] = [0.5 0.3; 0.3 0.5]
-        @test_throws AssertionError ffdiag(Cs2, -10)
-        @test_throws AssertionError ffdiag(Cs2, 100, -1.0)
+        @test_throws ArgumentError ffdiag(Cs2, -10)
+        @test_throws ArgumentError ffdiag(Cs2, 100, -1.0)
         Cs3 = ones(2, 3, 2)
         Cs3[:, :, 1] = [1.0 0.2 0.2; 0.2 0.8 0.2]
         Cs3[:, :, 2] = [0.5 0.3 0.2; 0.3 0.5 0.2]
-        @test_throws AssertionError ffdiag(Cs3)
+        @test_throws ArgumentError ffdiag(Cs3)
         Cs4 = ones(2, 2, 2)
         Cs4[:, :, 1] = [1.0 0.2; 0.3 0.8]
         Cs4[:, :, 2] = [0.5 0.3; 0.3 0.5]
-        @test_throws AssertionError ffdiag(Cs4)
+        @test_throws ArgumentError ffdiag(Cs4)
     end
 
 
-    @testset "test_diagonality" begin
+    @testset "test diagonality" begin
         @test begin
             C0 = zeros(Float64, 5, 5, 2)
 
@@ -133,7 +133,7 @@ include("ffdiag_test_util.jl")
         end
     end
 
-    @testset "plot_convergence_test" begin
+    @testset "plot convergence test" begin
         errs = [0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001]
         plot = plot_convergence(errs)
         @test !isnothing(plot)
