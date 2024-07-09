@@ -1,7 +1,6 @@
 using LinearAlgebra: I, diag, diagm, norm, tr, opnorm
 using Base: frexp
 
-
 """
 ffdiag(Cs, runs, tol) -> AbstractArray{<:Real}, Matrix{<:Real}, Array{<:Real}
 
@@ -19,25 +18,21 @@ The function returns the diagonalized set of matrices, the diagonalization matri
 - runs::Int: The maximum number of iterations. The default is max 100 iterations.
 - tol::Float64: The tolerance for the error. The default is 1e-9.
 """
-
 function ffdiag(
     C0::AbstractArray{<:Real},
     runs::Int=100,
     tol::Float64=1e-9
 )
-    @assert length(size(C0)) == 3 "C must be a tensor with dimensions K x M x N"
-    @assert tol >= 0 "Tolerance must be a nonnegative real number."
-    @assert runs > 0 "Maximum iteration must be positive."
-
+    # Ensure C0 is a 3-dimensional tensor
+    ndims(C0) != 3 && throw(ArgumentError("C0 must be a 3-dimensional tensor"))
     dim1, dim2, K = size(C0) # m,n,K
 
-    @assert (dim1 == dim2) "Error: Matrices not square."
-    @assert K > 1 "Error: Input is only one matrix not a set of matrices."
-
-    # Assert symmetry of matrices
-    for k in 1:K
-        @assert isapprox(C0[:, :, k], C0[:, :, k]') "Error: Matrix Cs[$k] is not symmetrical."
-    end
+    # Check Input and throw errors
+    tol < 0 && throw(ArgumentError("Tolerance must be a nonnegative real number."))
+    runs <= 0 && throw(ArgumentError("Maximum iteration must be positive."))
+    dim1 != dim2 && throw(ArgumentError("Error: Matrices not square."))
+    K <= 1 && throw(ArgumentError("Error: Input is only one matrix not a set of matrices."))
+    [!isapprox(C0[:, :, k], C0[:, :, k]') && throw(ArgumentError("Error: Matrix Cs[$k] is not symmetrical.")) for k in 1:K]
 
     # Init
     V = I
@@ -57,7 +52,7 @@ function ffdiag(
 
         W = getW(Cs)
 
-        _, e = frexp(opnorm(W, Inf))
+        e = frexp(opnorm(W, Inf))[2]
 
         s = max(0.0, e - 1)
         W = W / (2^s)
@@ -141,7 +136,7 @@ end
 # Returns the sum of the magnitude of the off-diagonal elements for multiple matrices 
 
 function get_off(V, Cs)
-    _, _, K = size(Cs)
+    K = size(Cs, 3)
     f = 0
 
     for k in 1:K
@@ -173,7 +168,7 @@ end
 
 # norms the the matrix 
 function normit(V)
-    N, _ = size(V)
+    N = size(V)[1]
     for n in 1:N
         nn = norm(V[:, n])
         if nn >= 1e-9
