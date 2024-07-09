@@ -1,9 +1,11 @@
-using LinearAlgebra: I, diag, diagm, norm, tr, opnorm
+using LinearAlgebra: I, diag, diagm, norm, tr, opnorm, UpperTriangular, LowerTriangular
 using Base: frexp
 
 
 """
-ffdiag(Cs, runs, tol) -> AbstractArray{<:Real}, Matrix{<:Real}, Array{<:Real}
+    ffdiag(C0, runs=100, tol=1e-9) -> AbstractArray{<:Real}, Matrix{<:Real}, Array{<:Real}
+
+Compute the transformation matrix that diagonalizes a set of symmetric matrices
 
 This is an Implementation of the Algorithm introduced in: 
 Ziehe, Andreas; Laskov, Pavel; Nolte, Guido; Müller Klaus-Robert. (2004).
@@ -15,11 +17,10 @@ Journal of Machine Learning Research 5 (2004) 777–800.
 The function returns the diagonalized set of matrices, the diagonalization matrix and an array of diagonlization errors per iteration.
 
 # Arguments
-- Cs::AbstractArray{<:Real}: This is a set of matrices to be diagonalized.
+- C0::AbstractArray{<:Real}: This is a set of matrices to be diagonalized.
 - runs::Int: The maximum number of iterations. The default is max 100 iterations.
 - tol::Float64: The tolerance for the error. The default is 1e-9.
 """
-
 function ffdiag(
     C0::AbstractArray{<:Real},
     runs::Int=100,
@@ -48,11 +49,6 @@ function ffdiag(
     errs = zeros(runs + 1)
     fs = zeros(runs + 1)
 
-    # doesnt do anything right now because V = I 
-    for k in 1:K
-        V * Cs[k] * V'
-    end
-
     while run < runs && df > tol
 
         W = getW(Cs)
@@ -68,13 +64,11 @@ function ffdiag(
         # Renormalization
         V = diagm(1 ./ sqrt.(diag(V * V'))) * V
 
-        for k in 1:K
-            # Cs[:, :, k] = ((I + W) * C0[:, :, k] * (I + W)')
-            Cs[:, :, k] = (V * C0[:, :, k] * V')
-            #errs[run+1] += norm(Cs[:, :, k] - diagm(diag(Cs[:, :, k]))) / K
-        end
+        # Update Cs
+        [Cs[:, :, k] = (V * C0[:, :, k] * V') for k in 1:K]
 
-        fs[run] = get_off(V, C0)
+        # Compute off-diagonal elements 
+        fs[run]   = get_off(V, C0)
         errs[run] = cost_off(C0, normit(V')')
 
         if run > 2
@@ -93,29 +87,24 @@ end
 function getW(Cs)
 
     dim1, dim2, K = size(Cs)
-
-    W = zeros(dim1, dim2)
-    Ds = [zeros(dim1) for _ in 1:K]
-    Es = copy(Cs)
-
-    for i in 1:K
-        Ds[i] = (diag(Cs[:, :, i]))
-        # make the diagonal of Es zero
-        for j in 1:dim1
-            Es[j, j, i] = 0
-        end
-    end
-
+    
+    # Ds = the diagonal of Cs
+    Ds = [diag(Cs[:, :, i]) for i in 1:K]
+    
+    # Es = Cs with the diagonal set to zero
+    Es = copy(Cs); [Es[:, :, i] -= diagm(Ds[i]) for i in 1:K]
+    
     # calculate W (17) 
-    z = zeros(dim1, dim2)
+    z = zeros(dim1, dim2); 
     y = zeros(dim1, dim2)
-
+    
     for k in 1:K
         z += (Ds[k] * Ds[k]')
         y += 0.5 .* Ds[k]' .* (Es[:, :, k] + Es[:, :, k]')
     end
+    
+    W = zeros(dim1, dim2)
 
-    # Check if we need to the for loops are programmed correctly 
     for i in 1:dim1-1
         for j in (i+1):dim2
             if i != j
@@ -141,30 +130,21 @@ end
 # Returns the sum of the magnitude of the off-diagonal elements for multiple matrices 
 
 function get_off(V, Cs)
-    _, _, K = size(Cs)
-    f = 0
-
-    for k in 1:K
-        f = f + off(V, Cs[:, :, k])
-    end
+    _, _, K = size(Cs) 
+    f = sum( off(V, Cs[:, :, k]) for k in 1:K )
     return f
 end
 
 
 # Calculates the norm of the elements that are not on the diagonal and sums it over all matirces of C
 function cost_off(Cs, V)
-    n, m, K = size(Cs)
+    _, _, K = size(Cs)
 
     cost = 0
     for k in 1:K
         Ck = (V * Cs[:, :, k] * V')
-        for i in 1:n
-            for j in 1:m
-                if i == j
-                    Ck[i, j] = 0
-                end
-            end
-        end
+        # The diagonal is set to zero
+        Ck -= diagm(diag(Ck))
         cost += norm(Ck)^2
     end
     return cost
