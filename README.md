@@ -2,7 +2,7 @@
 
 ## Repository Description
 
-This Julia package implements two algorithms for approximate joint diagonalization.
+This Julia package implements two algorithms for approximate joint diagonalization. This repo is part of course work for computer science at masters level at TU Berlin.
 
 ### ffdiag - Fast Frobenius Diagonalization
 
