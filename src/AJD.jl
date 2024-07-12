@@ -2,8 +2,8 @@ module AJD
 
 include("QDiag/_KN3_approach.jl")
 include("FFDiag/ffdiag.jl")
-include("FFDiag/plot.jl")
 
+import Plots: plot
 import LinearAlgebra: isposdef, eigen, Diagonal, norm
 import Random: Xoshiro
 
@@ -37,7 +37,8 @@ function QDiag(
     tolerance::Real,
     maximum_iteration::Integer,
     random_number_generator::Xoshiro = Xoshiro(),
-)::AbstractArray{<:Real}
+    return_iteration_errors::Bool = false
+)
 
     @assert isposdef(C_0) "C_0 must be positive-definite."
     @assert ((approach == "KN3") || (approach == "N5"))
@@ -49,7 +50,7 @@ function QDiag(
     @assert maximum_iteration > 0 "Maximum iteration must be positive."
 
 
-    result = _optimize(
+    result, iteration_errors = _optimize(
         C_0,
         C,
         weights,
@@ -58,30 +59,41 @@ function QDiag(
         maximum_iteration,
         random_number_generator,
     )
+    if return_iteration_errors
+        return result, iteration_errors
+    else
+        return result
+    end
 end
 
-function _optimize(
-    C_0,
-    C,
-    weights,
-    approach,
-    tolerance,
-    maximum_iteration,
-    random_number_generator,
+"""
+plot_convergence(errs, label) 
+
+Plot the convergence error over iterations on a logarithmic scale.
+
+# Arguments
+- errs::AbstractArray{<:Real} An array with the errors, where the index corresponds to the number of iteration.
+- label::String Label of the figure.
+"""
+function plot_convergence(errs::AbstractArray{<:Real}, label::String)
+
+    plot(
+    1:length(errs), errs;
+    # Text labels
+    title="Plotting Convergence",
+    xlabel="number of iteration",
+    ylabel="convergence error",
+    label=label,
+    # Line style
+    color=:black,
+    linewidth=2,
+    # Axis settings
+    yscale=:log10,
+    # Other
+    fontfamily="Helvetica",
+    size=(600, 350),
+    dpi=300,
 )
-    if approach == "KN3"
-        result = _apply_KN3(
-            C_0,
-            C,
-            weights,
-            tolerance,
-            maximum_iteration,
-            random_number_generator,
-        )
-    else
-        # N5 will be implemented
-    end
-    return result
 end
 
 export QDiag, ffdiag, plot_convergence, getW, off, cost_off, get_off, normit
