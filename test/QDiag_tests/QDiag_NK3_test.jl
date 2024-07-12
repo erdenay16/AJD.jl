@@ -126,7 +126,8 @@ const maximum_iteration = 100
             C_test[:, :, 3] = [5 6; 6 8]
 
             random_number_generator = Xoshiro(7)
-            result = QDiag(
+            return_iteration_errors = true
+            result, iteration_errors = QDiag(
                 C0_test,
                 C_test,
                 weights_test,
@@ -134,8 +135,11 @@ const maximum_iteration = 100
                 tolerance,
                 maximum_iteration,
                 random_number_generator,
+                return_iteration_errors
             )
+
             @test isapprox(result * C0_test * result', desired_result)
+            @test isequal(length(iteration_errors), 46)
         end
     end
 end
