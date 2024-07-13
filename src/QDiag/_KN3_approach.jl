@@ -92,8 +92,9 @@ function _apply_KN3(C_0, C, weights, tolerance, maximum_iteration, random_number
             delta = norm(W[i, :] - w_new)
             W[i, :] = w_new
         end
+        error = _calculate_error(W, C_0, C, weights)
+        push!(iteration_errors, error)
 
-        push!(iteration_errors, _calculate_error(W, C_0, C, weights))
         if delta <= tolerance
             break
         end

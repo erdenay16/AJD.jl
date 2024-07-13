@@ -10,6 +10,7 @@ const weights = ones(2)
 const approach = "KN3"
 const tolerance = 0.0001
 const maximum_iteration = 100
+const return_iteration_errors = true
 
 @testset "QDiag_NK3_test" begin
     @testset "QDiag_NK3_initialization" begin
@@ -22,6 +23,7 @@ const maximum_iteration = 100
                 approach,
                 tolerance,
                 maximum_iteration,
+                return_iteration_errors
             )
         end
 
@@ -34,6 +36,7 @@ const maximum_iteration = 100
                 approach_test,
                 tolerance,
                 maximum_iteration,
+                return_iteration_errors
             )
         end
 
@@ -46,6 +49,7 @@ const maximum_iteration = 100
                 approach,
                 tolerance,
                 maximum_iteration,
+                return_iteration_errors
             )
         end
 
@@ -58,6 +62,7 @@ const maximum_iteration = 100
                 approach,
                 tolerance,
                 maximum_iteration,
+                return_iteration_errors
             )
         end
 
@@ -70,6 +75,7 @@ const maximum_iteration = 100
                 approach,
                 tolerance,
                 maximum_iteration,
+                return_iteration_errors
             )
             weights_test = ones(2, 2)
             @test_throws AssertionError QDiag(
@@ -79,6 +85,7 @@ const maximum_iteration = 100
                 approach,
                 tolerance,
                 maximum_iteration,
+                return_iteration_errors
             )
         end
 
@@ -91,6 +98,7 @@ const maximum_iteration = 100
                 approach,
                 tolerance_test,
                 maximum_iteration,
+                return_iteration_errors
             )
         end
 
@@ -103,6 +111,7 @@ const maximum_iteration = 100
                 approach,
                 tolerance,
                 maximum_iteration_test,
+                return_iteration_errors
             )
         end
 
@@ -126,7 +135,6 @@ const maximum_iteration = 100
             C_test[:, :, 3] = [5 6; 6 8]
 
             random_number_generator = Xoshiro(7)
-            return_iteration_errors = true
             result, iteration_errors = QDiag(
                 C0_test,
                 C_test,
@@ -134,10 +142,10 @@ const maximum_iteration = 100
                 approach,
                 tolerance,
                 maximum_iteration,
-                random_number_generator,
-                return_iteration_errors
+                return_iteration_errors,
+                random_number_generator
             )
-
+            
             @test isapprox(result * C0_test * result', desired_result)
             @test isequal(length(iteration_errors), 46)
         end

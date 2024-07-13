@@ -8,7 +8,7 @@ import LinearAlgebra: isposdef, eigen, Diagonal, norm
 import Random: Xoshiro
 
 """
-    QDiag(C_0, C, weights, approach, tolerance, maximum_iteration, 
+    QDiag(C_0, C, weights, approach, tolerance, maximum_iteration, return_iteration_errors
         random_number_generator = Xoshiro()) -> AbstractArray{<:Real}
 
 This is an implementation of the algorithm introduced in: 
@@ -25,6 +25,7 @@ Namings of the parameters are consistent with the paper for easier understanding
 - approach::String: This is the flag for approaches "NK3" and "N5" introduced in the paper.
 - tolerance::Real: This is the tolerance for the error.
 - maximum_iteration::Integer: Maximum number of iterations.
+- return_iteration_errors::Bool: If true error log wil be returned.
 - random_number_generator::Xoshiro: This is random number generator for matrix ``W``. Default
     generator generates random numbers based on default_rng() but a seed can be introduced 
     by the user. This argument is added for testing purposes.
@@ -36,8 +37,8 @@ function QDiag(
     approach::String,
     tolerance::Real,
     maximum_iteration::Integer,
+    return_iteration_errors::Bool = false,
     random_number_generator::Xoshiro = Xoshiro(),
-    return_iteration_errors::Bool = false
 )
 
     @assert isposdef(C_0) "C_0 must be positive-definite."
@@ -80,9 +81,9 @@ function plot_convergence(errs::AbstractArray{<:Real}, label::String)
     plot(
     1:length(errs), errs;
     # Text labels
-    title="Plotting Convergence",
-    xlabel="number of iteration",
-    ylabel="convergence error",
+    title="Error Log of the Algorithm",
+    xlabel="number of iterations",
+    ylabel="error",
     label=label,
     # Line style
     color=:black,
