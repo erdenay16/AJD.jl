@@ -91,7 +91,49 @@ __err__ is returned so that it can be ploted. This can be ignored for most users
 
 ### QDiag
 #### KN3 Approach
+##### Usage
+
+```Julia
+C0 = [1.0 0.2; 0.2 0.8]
+C = zeros(2, 2, 2)
+C[:,:,1] = [1.0 0.2; 0.2 0.8]
+C[:,:,2] = [0.5 0.3; 0.3 0.5]
+C_test_copy = deepcopy(C_test)
+weights = ones(2)
+approach = "KN3"
+tolerance = 0.01
+maximum_iteration = 100
+return_iteration_errors = true
+random_number_generator = Xoshiro(7)
+
+result, iteration_errors = QDiag(
+                C0_test,
+                C_test,
+                weights_test,
+                approach,
+                tolerance,
+                maximum_iteration,
+                return_iteration_errors,
+                random_number_generator
+            )
+
+```
+
+And we use the result for diagonalization of the matrices:
+
+```repl
+julia> display(result' C_test_copy[:,:,1] * result)
+  1.0         6.17756e-8
+  6.17756e-8  1.0
+
+julia> display(result' C_test_copy[:,:,2] * result)
+  0.742951   -8.3149e-8
+  -8.3149e-8   0.283365
+```
+
+
 ##### Example 1: randomly created 10 4x4 fully diagonalizable matrices.
+
 <div style="display: flex; justify-content: space-between;">
     <img src="docs/src/heatmaps/fully_diagonalizable/matrix_1.png" alt="Matrix 1" style="width: 19%;"/>
     <img src="docs/src/heatmaps/fully_diagonalizable/matrix_2.png" alt="Matrix 2" style="width: 19%;"/>
