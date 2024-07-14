@@ -4,7 +4,7 @@ include("QDiag/_KN3_approach.jl")
 include("FFDiag/ffdiag.jl")
 
 import Plots: plot
-import LinearAlgebra: isposdef, eigen, Diagonal, norm
+import LinearAlgebra: isposdef, eigen, Diagonal, norm, diag
 import Random: Xoshiro
 
 """
@@ -67,6 +67,30 @@ function QDiag(
     end
 end
 
+function _optimize(
+    C_0,
+    C,
+    weights,
+    approach,
+    tolerance,
+    maximum_iteration,
+    random_number_generator,
+)
+    if approach == "KN3"
+        result, iteration_errors = _apply_KN3(
+            C_0,
+            C,
+            weights,
+            tolerance,
+            maximum_iteration,
+            random_number_generator,
+        )
+    else
+        # N5 will be implemented
+    end
+    return result, iteration_errors
+end
+
 """
 plot_convergence(errs, label) 
 
@@ -76,15 +100,15 @@ Plot the convergence error over iterations on a logarithmic scale.
 - errs::AbstractArray{<:Real} An array with the errors, where the index corresponds to the number of iteration.
 - label::String Label of the figure.
 """
-function plot_convergence(errs::AbstractArray{<:Real}, label::String)
+function plot_convergence(errs::AbstractArray{<:Real}, title::String)
 
     plot(
     1:length(errs), errs;
     # Text labels
-    title="Error Log of the Algorithm",
+    title=title,
     xlabel="number of iterations",
     ylabel="error",
-    label=label,
+    label = "error_log",
     # Line style
     color=:black,
     linewidth=2,

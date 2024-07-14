@@ -4,6 +4,7 @@ authors = ["Mustafa Erdenay Gürol erdenay16@gmail.com"]
 version = "1.0.0-DEV"
 
 [deps]
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 LiveServer = "16fef848-5104-11e9-1b77-fb7a48bbb589"
 MatrixDepot = "b51810bb-c9f3-55da-ae3c-350fc1fbce05"
