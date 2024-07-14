@@ -30,7 +30,7 @@ To install this Julia package using Julia's package manager, follow these steps:
 6. Exit the package manager by pressing `Ctrl + C`.
 7. You can now use the package by importing it in your Julia code.
 
-For more detailed instructions, you can refer to the [official documentation](https://erdenay16.github.io/AJD.jl/stable/).
+For more detailed instructions, you can refer to the [official documentation](https://erdenay16.github.io/AJD.jl/dev/).
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://erdenay16.github.io/AJD.jl/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://erdenay16.github.io/AJD.jl/dev/)
