@@ -202,6 +202,7 @@ And the result of KN3 approach is:
     <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_9.png" alt="Matrix 2" style="width: 19%;"/>
     <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_10.png" alt="Matrix 1" style="width: 19%;"/>
 </div>
+
 ## Licence 
 
 This package is licensed under the MIT License. You can find the full text of the license in the [LICENSE](https://github.com/erdenay16/AJD.jl/blob/main/LICENSE) file.
