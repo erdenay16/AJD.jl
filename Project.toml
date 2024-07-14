@@ -4,13 +4,14 @@ authors = ["Mustafa Erdenay Gürol erdenay16@gmail.com"]
 version = "1.0.0-DEV"
 
 [deps]
+Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
-
-Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-
 MatrixDepot = "b51810bb-c9f3-55da-ae3c-350fc1fbce05"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+WAV = "8149f6b0-98f6-5db9-b78f-408fbbb8ef88"
 
 [compat]
 julia = "1.10"

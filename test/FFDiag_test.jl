@@ -6,11 +6,12 @@ using Plots: plot
 
 
 include("ffdiag_test_util.jl")
+include("time_delayed_corr_Ms/timeDelayedCorrMs.jl")
 
 
 @testset "AJD.jl" begin
-    
-    @testset "test_helper_funktions" begin
+
+    @testset "Tests the helper funktions" begin
         Cs = ones(2, 2, 2)
         Cs[:, :, 1] = [1.0 0.2; 0.2 0.8]
         Cs[:, :, 2] = [0.5 0.3; 0.3 0.5]
@@ -46,10 +47,10 @@ include("ffdiag_test_util.jl")
         end
     end
 
-    @testset "ffdiag_assertions" begin
+    @testset "ffdiag assertions" begin
         Cs1 = ones(2, 2, 1)
-        Cs1[:,:,1] = [1.0 0.2; 0.2 0.8]
-        @test_throws AssertionError ffdiag(Cs1[:,:,1])
+        Cs1[:, :, 1] = [1.0 0.2; 0.2 0.8]
+        @test_throws AssertionError ffdiag(Cs1[:, :, 1])
         @test_throws AssertionError ffdiag(Cs1)
         Cs2 = ones(2, 2, 2)
         Cs2[:, :, 1] = [1.0 0.2; 0.2 0.8]
@@ -67,7 +68,7 @@ include("ffdiag_test_util.jl")
     end
 
 
-    @testset "test_diagonality" begin
+    @testset "test diagonality" begin
         @test begin
             C0 = zeros(Float64, 5, 5, 2)
 
@@ -133,7 +134,7 @@ include("ffdiag_test_util.jl")
         end
     end
 
-    @testset "plot_convergence_test" begin
+    @testset "Checks if the convergence is plotted" begin
         errs = [0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001]
         plot = plot_convergence(errs)
         @test !isnothing(plot)
