@@ -138,6 +138,38 @@ include("ffdiag_test_util.jl")
         plot = plot_convergence(errs)
         @test !isnothing(plot)
     end
+
+
+
+    # TODO: This does not work, I am not sure how to go from here
+    # generate_source works I think
+    @testset "linear_mixture_test" begin
+        K = 20
+        n = 6
+        T = 10000
+
+        # Generate source matrix
+        S = generate_source(7, 10000, "speech")
+
+        # Generate time correlated matrices
+        C_s = genTimeCorrMs(S, 5, T)
+
+
+        # Compute cross correlation matrices
+        # C_x = zeros(n, n, K+1)
+        # for k in 0:5:K*5
+        #     C_x[:, :, k÷5+1] = A * C_s[:, :, k÷5+1] * A'
+        # end
+
+        # Perform AJD
+        A_est, _, _ = ffdiag(S)
+
+        # Check if A_est is close to A
+        isapprox(A_est, C_s, atol=10)
+    end
+
+
+
 end
 
 
