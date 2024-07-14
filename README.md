@@ -91,7 +91,7 @@ __err__ is returned so that it can be ploted. This can be ignored for most users
 
 ### QDiag
 #### KN3 Approach
-Example: randomly created 10 4x4 fully diagonalizable matrices.
+##### Example 1: randomly created 10 4x4 fully diagonalizable matrices.
 <div style="display: flex; justify-content: space-between;">
     <img src="docs/src/heatmaps/fully_diagonalizable/matrix_1.png" alt="Matrix 1" style="width: 19%;"/>
     <img src="docs/src/heatmaps/fully_diagonalizable/matrix_2.png" alt="Matrix 2" style="width: 19%;"/>
@@ -125,6 +125,41 @@ And the result of KN3 approach is:
     <img src="docs/src/heatmaps/fully_diagonalizable/diagonalized_matrix_10.png" alt="Matrix 1" style="width: 19%;"/>
 </div>
 
+
+##### Example 2: randomly created 10 4x4 approximately diagonalizable matrices.
+
+<div style="display: flex; justify-content: space-between;">
+    <img src="docs/src/heatmaps/approximately_diagonalizable/matrix_1.png" alt="Matrix 1" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/matrix_2.png" alt="Matrix 2" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/matrix_3.png" alt="Matrix 1" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/matrix_4.png" alt="Matrix 2" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/matrix_5.png" alt="Matrix 1" style="width: 19%;"/>
+</div>
+
+<div style="display: flex; justify-content: space-between;">
+    <img src="docs/src/heatmaps/approximately_diagonalizable/matrix_6.png" alt="Matrix 1" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/matrix_7.png" alt="Matrix 2" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/matrix_8.png" alt="Matrix 1" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/matrix_9.png" alt="Matrix 2" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/matrix_10.png" alt="Matrix 1" style="width: 19%;"/>
+</div>
+
+And the result of KN3 approach is:
+<div style="display: flex; justify-content: space-between;">
+    <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_1.png" alt="Matrix 1" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_2.png" alt="Matrix 2" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_3.png" alt="Matrix 1" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_4.png" alt="Matrix 2" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_5.png" alt="Matrix 1" style="width: 19%;"/>
+</div>
+
+<div style="display: flex; justify-content: space-between;">
+    <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_6.png" alt="Matrix 1" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_7.png" alt="Matrix 2" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_8.png" alt="Matrix 1" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_9.png" alt="Matrix 2" style="width: 19%;"/>
+    <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_10.png" alt="Matrix 1" style="width: 19%;"/>
+</div>
 ## Licence 
 
 This package is licensed under the MIT License. You can find the full text of the license in the [LICENSE](https://github.com/erdenay16/AJD.jl/blob/main/LICENSE) file.
