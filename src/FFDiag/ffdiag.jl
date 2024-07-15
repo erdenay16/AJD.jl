@@ -1,4 +1,4 @@
-using LinearAlgebra: I, diag, diagm, norm, tr, opnorm, UpperTriangular, LowerTriangular
+using LinearAlgebra: I, diag, diagm, norm, tr, opnorm
 using Base: frexp
 
 
@@ -26,18 +26,18 @@ function ffdiag(
     runs::Int=100,
     tol::Float64=1e-9
 )
-    @assert length(size(C0)) == 3 "C must be a tensor with dimensions K x M x N"
-    @assert tol >= 0 "Tolerance must be a nonnegative real number."
-    @assert runs > 0 "Maximum iteration must be positive."
+    length(size(C0)) == 3 || throw(DimensionMismatch("C must be a tensor with dimensions K x M x N"))
+    tol >= 0 || throw(ArgumentError("Tolerance must be a nonnegative real number."))
+    runs > 0 || throw(ArgumentError("Maximum iteration must be positive."))
 
     dim1, dim2, K = size(C0) # m,n,K
 
-    @assert (dim1 == dim2) "Error: Matrices not square."
-    @assert K > 1 "Error: Input is only one matrix not a set of matrices."
+    (dim1 == dim2) || throw(DimensionMismatch("Error: Matrices not square."))
+    K > 1 || throw(ArgumentError("Error: Input is only one matrix not a set of matrices."))
 
     # Assert symmetry of matrices
     for k in 1:K
-        @assert isapprox(C0[:, :, k], C0[:, :, k]') "Error: Matrix Cs[$k] is not symmetrical."
+        isapprox(C0[:,:,k], C0[:,:,k]') || @warn "Error: Matrix Cs[$k] is not symmetrical."
     end
 
     # Init
@@ -89,7 +89,7 @@ function getW(Cs)
     dim1, dim2, K = size(Cs)
     
     # Ds = the diagonal of Cs
-    Ds = [diag(Cs[:, :, i]) for i in 1:K]
+    Ds = [diag(C) for C in eachslice(Cs, dims=3)]
     
     # Es = Cs with the diagonal set to zero
     Es = copy(Cs); [Es[:, :, i] -= diagm(Ds[i]) for i in 1:K]
@@ -130,19 +130,18 @@ end
 # Returns the sum of the magnitude of the off-diagonal elements for multiple matrices 
 
 function get_off(V, Cs)
-    _, _, K = size(Cs) 
-    f = sum( off(V, Cs[:, :, k]) for k in 1:K )
+    f = sum(off(V, C) for C in eachslice(Cs, dims=3))
     return f
 end
 
 
 # Calculates the norm of the elements that are not on the diagonal and sums it over all matirces of C
 function cost_off(Cs, V)
-    _, _, K = size(Cs)
+    K = size(Cs, 3)
 
     cost = 0
-    for k in 1:K
-        Ck = (V * Cs[:, :, k] * V')
+    for C in eachslice(Cs, dims=3)
+        Ck = (V * C * V')
         # The diagonal is set to zero
         Ck -= diagm(diag(Ck))
         cost += norm(Ck)^2
@@ -153,11 +152,10 @@ end
 
 # norms the the matrix 
 function normit(V)
-    N, _ = size(V)
-    for n in 1:N
-        nn = norm(V[:, n])
+    for col in eachcol(V)
+        nn = norm(col)
         if nn >= 1e-9
-            V[:, n] = V[:, n] ./ nn
+            col .= col / nn
         end
     end
     return V
