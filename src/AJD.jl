@@ -2,6 +2,7 @@ module AJD
 
 include("QDiag/_KN3_approach.jl")
 include("FFDiag/ffdiag.jl")
+include("QDiag/N5_approach.jl")
 
 import Plots: plot
 import LinearAlgebra: isposdef, eigen, Diagonal, norm, diag
@@ -86,7 +87,15 @@ function _optimize(
             random_number_generator,
         )
     else
-        # N5 will be implemented
+        approach == "N5"
+        result, iteration_errors = N5Approach.QDiag_N5(
+            C_0,
+            C,
+            weights,
+            tolerance,
+            maximum_iteration,
+            random_number_generator,
+        )
     end
     return result, iteration_errors
 end
