@@ -5,7 +5,6 @@ module N5Approach
 using LinearAlgebra
 using Random
 
-# Funktion zur Initialisierung
 function _initialize_N5(C_0, C, weights, random_number_generator)
     N = size(C_0, 1)
     W = randn(random_number_generator, N, N)
@@ -17,7 +16,6 @@ function _initialize_N5(C_0, C, weights, random_number_generator)
     return P, W, C, weights
 end
 
-# Hauptoptimierungsschleife
 function _optimize_N5(C, W, weights, tolerance, max_iter)
     N = size(C, 1)
     K = size(C, 3)
@@ -41,7 +39,6 @@ function _optimize_N5(C, W, weights, tolerance, max_iter)
     return W
 end
 
-# Hauptfunktion für den N5-Ansatz
 function QDiag_N5(C_0::AbstractArray{<:Real}, C::AbstractArray{<:Real}, weights::AbstractArray{<:Real}, tolerance::Real, max_iter::Int, rng::Random.AbstractRNG = Random.default_rng())
     @assert isposdef(C_0) "C_0 must be positive-definite."
     @assert size(C_0, 1) == size(C_0, 2) == size(C, 1) == size(C, 2) "C_0 and C must have compatible dimensions."
