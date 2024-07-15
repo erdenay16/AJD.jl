@@ -1,4 +1,4 @@
-using LinearAlgebra: I, diag, diagm, norm, tr, opnorm, UpperTriangular, LowerTriangular
+using LinearAlgebra: I, diag, diagm, norm, tr, opnorm
 using Base: frexp
 
 
@@ -92,22 +92,23 @@ end
 function getW(Cs)
 
     dim1, dim2, K = size(Cs)
-    
+
     # Ds = the diagonal of Cs
     Ds = [diag(Cs[:, :, i]) for i in 1:K]
-    
+
     # Es = Cs with the diagonal set to zero
-    Es = copy(Cs); [Es[:, :, i] -= diagm(Ds[i]) for i in 1:K]
-    
+    Es = copy(Cs)
+    [Es[:, :, i] -= diagm(Ds[i]) for i in 1:K]
+
     # calculate W (17) 
-    z = zeros(dim1, dim2); 
+    z = zeros(dim1, dim2)
     y = zeros(dim1, dim2)
-    
+
     for k in 1:K
         z += (Ds[k] * Ds[k]')
         y += 0.5 .* Ds[k]' .* (Es[:, :, k] + Es[:, :, k]')
     end
-    
+
     W = zeros(dim1, dim2)
 
     for i in 1:dim1-1
@@ -128,15 +129,15 @@ end
 function off(V, C)
     F = V * C * V'
     f = tr(F' * F) - tr(F .* F)
-    return f 
+    return f
 end
 
 
 # Returns the sum of the magnitude of the off-diagonal elements for multiple matrices 
 
 function get_off(V, Cs)
-    _, _, K = size(Cs) 
-    f = sum( off(V, Cs[:, :, k]) for k in 1:K )
+    _, _, K = size(Cs)
+    f = sum(off(V, Cs[:, :, k]) for k in 1:K)
     return f
 end
 

@@ -4,9 +4,8 @@ using Test
 using MatrixDepot: matrixdepot
 using Plots: plot
 
-
 include("ffdiag_test_util.jl")
-include("time_delayed_corr_Ms/timeDelayedCorrMs.jl")
+include("time_delayed_corr_Ms/time_delayed_corr_Ms.jl")
 
 
 @testset "AJD.jl" begin
@@ -172,6 +171,5 @@ include("time_delayed_corr_Ms/timeDelayedCorrMs.jl")
 
 
 end
-
 
 

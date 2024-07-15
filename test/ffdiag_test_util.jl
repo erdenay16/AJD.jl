@@ -35,7 +35,7 @@ function genApproxDiagMs(K::Int, size::Int)
         Cx[:, :, i] = Ak * Cs[i] * Ak'
         push!(Ax, Ak)
     end 
-    return Cx, Ax  
+    return Cx, A  
 end
 
 function genTimeCorrMs(X, lags, method = "cov", symmetrize=false)
