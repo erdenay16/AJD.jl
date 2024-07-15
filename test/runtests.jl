@@ -5,4 +5,5 @@ using Test
     include("QDiag_tests/QDiag_NK3_test.jl")
     include("FFDaig_tests/ffdiag_test_util.jl")
     include("FFDaig_tests/FFDiag_test.jl")
+    include("QDiag_tests/QDiag_N5_test.jl")
 end
