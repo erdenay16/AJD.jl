@@ -1,7 +1,5 @@
 # N5 Approach
 
-module N5Approach
-
 using LinearAlgebra
 using Random
 
