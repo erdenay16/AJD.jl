@@ -203,6 +203,32 @@ And the result of KN3 approach is:
     <img src="docs/src/heatmaps/approximately_diagonalizable/diagonalized_matrix_10.png" alt="Matrix 1" style="width: 19%;"/>
 </div>
 
+
+#### N5 Approach
+
+```Julia
+C0 = [1.0 0.2; 0.2 0.8]
+C = zeros(2, 2, 2)
+C[:, :, 1] = [1.0 0.2; 0.2 0.8]
+C[:, :, 2] = [0.5 0.3; 0.3 0.5]
+weights = ones(2)
+tolerance = 0.01
+max_iter = 100
+rng = MersenneTwister(1234)
+
+result = QDiag_N5(C0, C, weights, tolerance, max_iter, rng)
+
+display(result' * C[:, :, 1] * result)
+display(result' * C[:, :, 2] * result)
+```
+
+C_0 is a positive-definite matrix used for initialization.
+C is a set of matrices to be jointly diagonalized.
+weights are used to adjust the influence of each matrix in the optimization process.
+tolerance specifies the precision required for convergence.
+max_iter sets the maximum number of iterations allowed for the optimization process.
+
+
 ## Licence 
 
 This package is licensed under the MIT License. You can find the full text of the license in the [LICENSE](https://github.com/erdenay16/AJD.jl/blob/main/LICENSE) file.
