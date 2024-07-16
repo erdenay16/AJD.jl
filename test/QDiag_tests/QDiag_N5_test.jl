@@ -21,6 +21,8 @@ end
     tolerance = 1e-6
     max_iter = 1000
     
+    C = reshape(C, N, N, K)
+
     W = QDiag_N5(C_0, C, weights, tolerance, max_iter, rng)
     
     @test size(W) == (N, N)
@@ -38,6 +40,8 @@ end
     tolerance = 1e-8
     max_iter = 1000
     
+    C = reshape(C, N, N, K)
+
     W = QDiag_N5(C_0, C, weights, tolerance, max_iter, rng)
     
     @test size(W) == (N, N)
@@ -55,6 +59,8 @@ end
     tolerance = 1e-12
     max_iter = 5
     
+    C = reshape(C, N, N, K)
+
     W = QDiag_N5(C_0, C, weights, tolerance, max_iter, rng)
     
     @test size(W) == (N, N)
@@ -71,6 +77,8 @@ end
     weights = [1.0, 2.0, 3.0]
     tolerance = 1e-6
     max_iter = 1000
+    
+    C = reshape(C, N, N, K)
     
     W = QDiag_N5(C_0, C, weights, tolerance, max_iter, rng)
     
