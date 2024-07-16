@@ -47,5 +47,3 @@ function QDiag_N5(C_0::AbstractArray{<:Real}, C::AbstractArray{<:Real}, weights:
     W = _optimize_N5(C, W, weights, tolerance, max_iter)
     return P * W
 end
-
-end
