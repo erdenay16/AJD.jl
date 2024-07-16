@@ -5,13 +5,16 @@ using Random
 
 function _initialize_N5(C_0, C, weights, random_number_generator)
     N = size(C_0, 1)
-    W = randn(random_number_generator, N, N)
+    K = size(C, 3)
+    
     P = cholesky(C_0).U
-    for k = 1:size(C, 3)
+    
+    for k = 1:K
         C[:, :, k] = P' * C[:, :, k] * P
     end
+    
     weights = weights / sum(weights)
-    return P, W, C, weights
+    return P, randn(random_number_generator, N, N), C, weights
 end
 
 function _optimize_N5(C, W, weights, tolerance, max_iter)
