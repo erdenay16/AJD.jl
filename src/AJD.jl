@@ -88,7 +88,7 @@ function _optimize(
         )
     else
         approach == "N5"
-        result, iteration_errors = N5Approach.QDiag_N5(
+        result, iteration_errors = QDiag_N5(
             C_0,
             C,
             weights,
